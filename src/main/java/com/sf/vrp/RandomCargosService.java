@@ -13,7 +13,7 @@ import com.graphhopper.jsprit.core.problem.job.Service;
 
 public class RandomCargosService
 {
-    public static Collection<Service> generateService(int dim, int amount)
+    public static Collection<Service> generateService(int dim, Integer amount)
     {
 	Set<Point> points = generatePoints(dim, amount);
 	
@@ -27,7 +27,7 @@ public class RandomCargosService
 	return services;
     }
     
-    public static Collection<Delivery> generateCargos(int dim, int amount)
+    public static Collection<Delivery> generateCargos(int dim, Integer amount)
     {
 	Set<Point> points = generatePoints(dim, amount);
 	
@@ -49,8 +49,13 @@ public class RandomCargosService
 	return deliveries;
     }
     
-    private static Set<Point> generatePoints(int dim, int amount)
+    private static Set<Point> generatePoints(int dim, Integer amount)
     {
+	if (amount == null)
+	{
+	    amount = new Random().nextInt(dim*dim);
+	}
+	
 	Set<Point> points = new HashSet<>();
 	Random generator = new Random();
 	while (points.size() < amount) 

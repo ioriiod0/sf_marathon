@@ -1,7 +1,7 @@
 package com.sf.vrp;
 
 import java.util.Collection;
-import java.util.Random;
+import java.util.Date;
 
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter.Label;
@@ -23,6 +23,7 @@ import com.graphhopper.jsprit.core.util.Solutions;
 public class Sandbox
 {
     public static final int DIM = 9;
+    public static final int AMOUNT = 80;
     
     public static void main(String[] args)
     {
@@ -39,7 +40,8 @@ public class Sandbox
 					.build();
 	
 //	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
-	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, new Random().nextInt(DIM*DIM));
+	
+	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, AMOUNT);
 	
 	VehicleRoutingTransportCosts costMatrix = ManhattanCostMatrix.costMatrix(DIM);
 	
@@ -57,6 +59,6 @@ public class Sandbox
 	SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);
 	Plotter plotter = new Plotter(problem, bestSolution);
         plotter.setLabel(Label.SIZE);
-        plotter.plot("output/solution.png", "solution");
+        plotter.plot(String.format("output/solution-%s.png", new Date().getTime()), "solution");
     }
 }
