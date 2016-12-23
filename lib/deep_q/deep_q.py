@@ -2,7 +2,7 @@
 # @Author: ioriiod0
 # @Date:   2016-12-23 10:21:21
 # @Last Modified by:   ioriiod0
-# @Last Modified time: 2016-12-23 14:04:31
+# @Last Modified time: 2016-12-23 14:22:52
 
 import numpy as np
 
@@ -51,9 +51,9 @@ class DeepQ(object):
 		self.policy = policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=1., value_min=.1, value_test=.05,
 							  nb_steps=100000)
 
-		self.memory =  memory = SequentialMemory(limit=1000000, window_length=1)
+		self.memory =  memory = SequentialMemory(limit=100000, window_length=1)
 		dqn = DQNAgent(model=model, nb_actions=nb_actions, policy=policy, memory=memory,
-			   processor=processor, nb_steps_warmup=1000, gamma=.99, target_model_update=1000,
+			   processor=processor, nb_steps_warmup=1000, gamma=.99, target_model_update=0.001,
 			   train_interval=4, batch_size=256) #delta_clip=1.
 		dqn.compile(Adam(lr=.001), metrics=['mae'])
 
