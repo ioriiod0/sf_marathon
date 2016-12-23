@@ -39,12 +39,14 @@ public class Sandbox
 					.setType(vechicleType)
 					.build();
 	
+	// Generate cargos distributions
 //	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
-	
 	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, AMOUNT);
 	
+	// Create a Cost Matrix Function
 	VehicleRoutingTransportCosts costMatrix = ManhattanCostMatrix.costMatrix(DIM);
 	
+	// Setup the VRP problem
 	VehicleRoutingProblem problem = VehicleRoutingProblem.Builder
 							.newInstance()
                                             		.addVehicle(vehicle)
@@ -54,8 +56,12 @@ public class Sandbox
                                             		.build();
 	
 	VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
+	
+	// Start to search solutions
 	Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
 	VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
+	
+	// Output solutions and analysis
 	SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);
 	Plotter plotter = new Plotter(problem, bestSolution);
         plotter.setLabel(Label.SIZE);

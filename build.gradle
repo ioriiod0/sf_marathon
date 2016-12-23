@@ -16,7 +16,6 @@ repositories {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.21'
 	// https://mvnrepository.com/artifact/com.graphhopper/jsprit-core
 	compile 'com.graphhopper:jsprit-core:1.7-RC1'
 	compile 'com.graphhopper:jsprit-analysis:1.7-RC1'
