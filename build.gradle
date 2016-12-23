@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+mainClassName="com.sf.vrp.Sandbox"
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.21'
+	// https://mvnrepository.com/artifact/com.graphhopper/jsprit-core
+	compile 'com.graphhopper:jsprit-core:1.7-RC1'
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.21'
+}
