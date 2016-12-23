@@ -2,7 +2,7 @@
 # @Author: ioriiod0
 # @Date:   2016-12-23 10:34:37
 # @Last Modified by:   ioriiod0
-# @Last Modified time: 2016-12-23 13:58:22
+# @Last Modified time: 2016-12-23 14:13:05
 
 import random
 import numpy as np
@@ -55,6 +55,8 @@ class Env(object):
 	def get_state(self):
 		pos = np.zeros(self.len)
 		pos[self.loc] = 1
+		# print pos
+		# print self.state
 		return np.hstack([self.state,pos])
 
 	@property
@@ -82,8 +84,10 @@ class Env(object):
 		return self.get_state()
 
 	def step(self,action):
+		# print "action",action
 		self.steps += 1
 		cord = self.loc / self.size[0],self.loc % self.size[0]
+		# print "cord:",cord
 
 		assert cord[0] >= 0 and cord[0] < self.size[0]
 		assert cord[1] >= 0 and cord[1] < self.size[1]

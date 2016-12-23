@@ -2,7 +2,7 @@
 # @Author: ioriiod0
 # @Date:   2016-12-23 10:21:21
 # @Last Modified by:   ioriiod0
-# @Last Modified time: 2016-12-23 13:56:50
+# @Last Modified time: 2016-12-23 14:04:31
 
 import numpy as np
 
@@ -59,20 +59,25 @@ class DeepQ(object):
 
 		self.dqn = dqn
 
+	def load(self):
+		weights_filename = 'models/dqn_weights.h5f'
+		try:
+			self.dqn.load_weights(weights_filename)
+		except Exception,e:
+			print "no model found"
+
+	def save(self):
+		weights_filename = '/models/dqn_weights.h5f'
+		self.dqn.save_weights(weights_filename, overwrite=True)
+
 	def train(self):
-		weights_filename = 'dqn_weights.h5f'
-		checkpoint_weights_filename = 'dqn_weights_{step}.h5f'
-		log_filename = 'dqn_log.json'
+		checkpoint_weights_filename = '/models/dqn_weights_{step}.h5f'
+		log_filename = '/models/dqn_log.json'
 		callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=25000)]
 		callbacks += [TrainEpisodeLogger()]
 		self.dqn.fit(self.env, callbacks=callbacks, nb_steps=175000, log_interval=1000)
 
-		# After training is done, we save the final weights one more time.
-		self.dqn.save_weights(weights_filename, overwrite=True)
-
 	def test(self):
-		weights_filename = 'dqn_weights.h5f'
-		self.dqn.load_weights(weights_filename)
 		self.dqn.test(self.env, nb_episodes=10)
 
 
