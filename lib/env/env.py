@@ -2,7 +2,7 @@
 # @Author: ioriiod0
 # @Date:   2016-12-23 10:34:37
 # @Last Modified by:   ioriiod0
-# @Last Modified time: 2016-12-23 12:52:53
+# @Last Modified time: 2016-12-23 13:58:22
 
 import random
 import numpy as np
@@ -18,14 +18,18 @@ class ACTION_SPACE:
 	# PEEK = 5
 
 
-class StaticPolicy(object):
+class RandomPolicy(object):
 	def __init__(self,total,n):
 		self.n = n
 		self.total = total
-		self.sample = random.sample(range(total),n)
 
-	def __call__(self,n):
-		return self.sample
+	def __call__(self,n,state=None,init=True):
+		if init:
+			return random.sample(range(self.total),n)
+		else:
+			free = [ i for i,p in enumerate(state) if p == 0]
+			return random.sample(free,n)
+
 
 
 class Env(object):
@@ -58,12 +62,16 @@ class Env(object):
 		self.loc == self.exit_point or self.steps == self.max_steps
 
 	def auto_peek(self):
+		reward = 0
 		if self.state[self.loc] == 1:
 			self.state[self.loc] = 0
 			self.collected += 1
-			return self.peek_reward
+			reward += self.peek_reward
+		if self.is_finished:
+			reward += 500
 
-		return -10
+		reward -= 10
+		return reward
 
 	def reset(self):
 		self.state = np.zeros(self.len)
@@ -79,46 +87,38 @@ class Env(object):
 
 		assert cord[0] >= 0 and cord[0] < self.size[0]
 		assert cord[1] >= 0 and cord[1] < self.size[1]
-		# if action == ACTION_SPACE.EAST:
-		# 	if cord[1] == 0:
-		# 		return 0,self.get_state(),self.is_finished,{}
-		# 	else:
-		# 		self.loc -= 1
-		# 		r = self.auto_peek()
-		# 		return r,self.get_state(),self.is_finished,{}
 
 		if action == ACTION_SPACE.EAST:
-			if cord[1] == self.size[0] - 1:
-				return self.get_state(),0,self.is_finished,{}
-			else:
+			if cord[1] != self.size[0] - 1:
 				self.loc += 1
 
 		elif action == ACTION_SPACE.WEST:
-			if cord[1] == 0:
-				return self.get_state(),0,self.is_finished,{}
-			else:
+			if cord[1] != 0:
 				self.loc -= 1
 
 		elif action == ACTION_SPACE.NORTH:
-			if cord[0] == 0:
-				return self.get_state(),0,self.is_finished,{}
-			else:
+			if cord[0] != 0:
 				self.loc -= self.size[0]
 
 		elif action == ACTION_SPACE.SOUTH:
-			if cord[0] == self.size[1] - 1:
-				return self.get_state(),0,self.is_finished,{}
-			else:
+			if cord[0] != self.size[1] - 1:
 				self.loc += self.size[0]
 
 		elif action == ACTION_SPACE.STAY:
-			return self.get_state(),0,self.is_finished,{}
+			pass
 
 		r = self.auto_peek()
+
+		if self.steps % 5 == 0:
+			ns = self.random_policy(1,self.state,init=False)
+			for n in ns:
+				self.state[n] = 1
+
+		# if self.steps == self.max_steps and self.loc != self.exit_point:
+		# 	r -= 1000
+
 		return self.get_state(),r,self.is_finished,{}
 
-		# elif action == ACTION_SPACE.PEEK:
-		# 	return 0,self.get_state(),self.is_finished,{}
 		
 	def render(self,*args,**kwargs):
 		pass

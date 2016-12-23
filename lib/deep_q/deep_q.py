@@ -2,7 +2,7 @@
 # @Author: ioriiod0
 # @Date:   2016-12-23 10:21:21
 # @Last Modified by:   ioriiod0
-# @Last Modified time: 2016-12-23 12:46:09
+# @Last Modified time: 2016-12-23 13:56:50
 
 import numpy as np
 
@@ -20,7 +20,6 @@ from rl.callbacks import FileLogger, ModelIntervalCheckpoint, TrainEpisodeLogger
 
 class EnvProcessor(Processor):
 	def process_observation(self, observation):
-		print observation.shape
 		return observation
 
 	def process_state_batch(self, batch):
@@ -38,6 +37,8 @@ class DeepQ(object):
 		self.model = model = Sequential()
 		model.add(Dense(1024,input_dim = state_dim * 2))
 		model.add(Activation('relu'))
+		model.add(Dense(1024))
+		model.add(Activation('relu'))
 		model.add(Dense(512))
 		model.add(Activation('relu'))
 		model.add(Dense(256))
@@ -52,7 +53,7 @@ class DeepQ(object):
 
 		self.memory =  memory = SequentialMemory(limit=1000000, window_length=1)
 		dqn = DQNAgent(model=model, nb_actions=nb_actions, policy=policy, memory=memory,
-			   processor=processor, nb_steps_warmup=1000, gamma=.99, target_model_update=0.001,
+			   processor=processor, nb_steps_warmup=1000, gamma=.99, target_model_update=1000,
 			   train_interval=4, batch_size=256) #delta_clip=1.
 		dqn.compile(Adam(lr=.001), metrics=['mae'])
 
