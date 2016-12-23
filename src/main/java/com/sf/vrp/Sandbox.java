@@ -3,6 +3,8 @@ package com.sf.vrp;
 import java.util.Collection;
 import java.util.Date;
 
+import com.graphhopper.jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.analysis.toolbox.Plotter.Label;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
@@ -18,12 +20,14 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter.Print;
+import com.graphhopper.jsprit.core.util.ManhattanCosts;
 import com.graphhopper.jsprit.core.util.Solutions;
 
 public class Sandbox
 {
-    public static final int DIM = 9;
-    public static final int AMOUNT = 80;
+    public static final int DIM = 100;
+    public static final int AMOUNT = 2 * DIM;
+    public static final boolean DYNAMIC = true;
     
     public static void main(String[] args)
     {
@@ -43,19 +47,22 @@ public class Sandbox
 //	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
 	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, AMOUNT);
 	
-	// Create a Cost Matrix Function
-	VehicleRoutingTransportCosts costMatrix = ManhattanCostMatrix.costMatrix(DIM);
-	
-	// Setup the VRP problem
-	VehicleRoutingProblem problem = VehicleRoutingProblem.Builder
-							.newInstance()
+	VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder
+                                            		.newInstance()
                                             		.addVehicle(vehicle)
                                             		.addAllJobs(cargos)
-                                            		.setRoutingCost(costMatrix)
-                                            		.setFleetSize(FleetSize.FINITE)
-                                            		.build();
+                                            		.setFleetSize(FleetSize.FINITE);
+	// Create a Cost Matrix Function
+	VehicleRoutingTransportCosts costMatrix = new ManhattanCosts(problemBuilder.getLocations());
+	
+	// Setup the VRP problem
+	VehicleRoutingProblem problem = problemBuilder.setRoutingCost(costMatrix).build();
 	
 	VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
+	if (DYNAMIC)
+	{
+	    algorithm.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/solution-%s.png"));
+	}
 	
 	// Start to search solutions
 	Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
@@ -63,8 +70,15 @@ public class Sandbox
 	
 	// Output solutions and analysis
 	SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);
-	Plotter plotter = new Plotter(problem, bestSolution);
-        plotter.setLabel(Label.SIZE);
-        plotter.plot(String.format("output/solution-%s.png", new Date().getTime()), "solution");
+	if (DYNAMIC)
+	{
+	    new GraphStreamViewer(problem, bestSolution).setRenderDelay(100).display();
+	}
+	else
+	{   
+	    Plotter plotter = new Plotter(problem, bestSolution);
+            plotter.setLabel(Label.SIZE);
+            plotter.plot(String.format("output/solution-%s.png", new Date().getTime()), "solution");
+	}
     }
 }
