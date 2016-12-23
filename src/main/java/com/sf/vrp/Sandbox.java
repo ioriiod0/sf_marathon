@@ -9,8 +9,9 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem.FleetSize;
+import com.graphhopper.jsprit.core.problem.cost.VehicleRoutingTransportCosts;
 import com.graphhopper.jsprit.core.problem.job.Delivery;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
@@ -33,16 +34,21 @@ public class Sandbox
 					.newInstance("Vechicle#1")
 					.setStartLocation(Location.newInstance(0, 0))
 					.setEndLocation(Location.newInstance(DIM-1, DIM-1))
+//					.setReturnToDepot(false)
 					.setType(vechicleType)
 					.build();
 	
 //	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
 	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, new Random().nextInt(DIM*DIM));
 	
+	VehicleRoutingTransportCosts costMatrix = ManhattanCostMatrix.costMatrix(DIM);
+	
 	VehicleRoutingProblem problem = VehicleRoutingProblem.Builder
 							.newInstance()
                                             		.addVehicle(vehicle)
                                             		.addAllJobs(cargos)
+                                            		.setRoutingCost(costMatrix)
+                                            		.setFleetSize(FleetSize.FINITE)
                                             		.build();
 	
 	VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
