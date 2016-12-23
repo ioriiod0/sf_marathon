@@ -9,6 +9,7 @@ import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
+import com.graphhopper.jsprit.core.problem.job.Delivery;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -35,12 +36,13 @@ public class Sandbox
 					.setType(vechicleType)
 					.build();
 	
-	Collection<Service> services = RandomCargosService.generate(DIM, new Random().nextInt(DIM*DIM));
+//	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
+	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, new Random().nextInt(DIM*DIM));
 	
 	VehicleRoutingProblem problem = VehicleRoutingProblem.Builder
 							.newInstance()
                                             		.addVehicle(vehicle)
-                                            		.addAllJobs(services)
+                                            		.addAllJobs(cargos)
                                             		.build();
 	
 	VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
