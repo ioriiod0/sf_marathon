@@ -40,12 +40,6 @@ public class RandomCargosService
 		    		.setPriority(1)
 		    		.build());
 	}
-//    	Delivery dest = Delivery.Builder
-//                		.newInstance("Dest")
-//                		.setLocation(Location.newInstance(dim , dim ))
-//                		.setPriority(3)
-//                		.build();
-//	deliveries.add(dest);
 	return deliveries;
     }
     

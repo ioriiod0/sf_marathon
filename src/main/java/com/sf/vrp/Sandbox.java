@@ -28,6 +28,8 @@ public class Sandbox
     public static final int DIM = 100;
     public static final int AMOUNT = 2 * DIM;
     public static final boolean DYNAMIC = true;
+    public static final Point START = new Point(0,0);
+    public static final Point DEST = new Point(DIM-1, DIM-1);
     
     public static void main(String[] args)
     {
@@ -37,14 +39,14 @@ public class Sandbox
 	
 	VehicleImpl vehicle = VehicleImpl.Builder
 					.newInstance("Vechicle#1")
-					.setStartLocation(Location.newInstance(0, 0))
-					.setEndLocation(Location.newInstance(DIM-1, DIM-1))
+					.setStartLocation(Location.newInstance(START.getX(), START.getY()))
+					.setEndLocation(Location.newInstance(DEST.getX(), DEST.getY()))
 //					.setReturnToDepot(false)
 					.setType(vechicleType)
 					.build();
 	
 	// Generate cargos distributions
-//	Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
+	// Collection<Service> cargos = RandomCargosService.generateService(DIM, new Random().nextInt(DIM*DIM));
 	Collection<Delivery> cargos = RandomCargosService.generateCargos(DIM, AMOUNT);
 	
 	VehicleRoutingProblem.Builder problemBuilder = VehicleRoutingProblem.Builder
