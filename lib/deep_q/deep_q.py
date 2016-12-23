@@ -48,7 +48,7 @@ class DeepQ(object):
 
 		print model.summary()
 		self.processor = processor = EnvProcessor()
-		self.policy = policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=1., value_min=.1, value_test=.05,
+		self.policy = policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=0.5, value_min=.1, value_test=0.0,
 							  nb_steps=100000)
 
 		self.memory =  memory = SequentialMemory(limit=100000, window_length=1)
@@ -73,9 +73,9 @@ class DeepQ(object):
 	def train(self):
 		checkpoint_weights_filename = '/models/dqn_weights_{step}.h5f'
 		log_filename = '/models/dqn_log.json'
-		callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=25000)]
+		callbacks = [ModelIntervalCheckpoint(checkpoint_weights_filename, interval=25)]
 		callbacks += [TrainEpisodeLogger()]
-		self.dqn.fit(self.env, callbacks=callbacks, nb_steps=175000, log_interval=1000)
+		self.dqn.fit(self.env, callbacks=callbacks, nb_steps=17500, log_interval=200)
 
 	def test(self):
 		self.dqn.test(self.env, nb_episodes=10)

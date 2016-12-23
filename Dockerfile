@@ -1,4 +1,4 @@
-FROM 10.202.11.142/sfai/auto_encoder
+FROM gw000/keras:1.1.1-py2-tf-cpu
 MAINTAINER ioriiod0@gmail.com
 
 RUN pip install git+https://github.com/matthiasplappert/keras-rl.git

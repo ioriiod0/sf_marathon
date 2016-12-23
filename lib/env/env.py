@@ -14,7 +14,7 @@ class ACTION_SPACE:
 	WEST = 1
 	SOUTH = 2
 	NORTH = 3
-	STAY = 4
+	# STAY = 4
 	# PEEK = 5
 
 
@@ -61,7 +61,10 @@ class Env(object):
 
 	@property
 	def is_finished(self):
-		self.loc == self.exit_point or self.steps == self.max_steps
+		self.loc == self.exit_point or self.steps >= self.max_steps
+		# if self.loc == self.exit_point or self.steps >= self.max_steps:
+			# print self.steps, self.collected, self.loc
+		return self.loc == self.exit_point or self.steps >= self.max_steps
 
 	def auto_peek(self):
 		reward = 0
@@ -70,7 +73,8 @@ class Env(object):
 			self.collected += 1
 			reward += self.peek_reward
 		if self.is_finished:
-			reward += 500
+			# reward += 500
+			pass
 
 		reward -= 10
 		return reward
@@ -108,15 +112,15 @@ class Env(object):
 			if cord[0] != self.size[1] - 1:
 				self.loc += self.size[0]
 
-		elif action == ACTION_SPACE.STAY:
-			pass
+		# elif action == ACTION_SPACE.STAY:
+		# 	pass
 
 		r = self.auto_peek()
 
-		if self.steps % 5 == 0:
-			ns = self.random_policy(1,self.state,init=False)
-			for n in ns:
-				self.state[n] = 1
+		# if self.steps % 5 == 0:
+		# 	ns = self.random_policy(1,self.state,init=False)
+		# 	for n in ns:
+		# 		self.state[n] = 1
 
 		# if self.steps == self.max_steps and self.loc != self.exit_point:
 		# 	r -= 1000
@@ -125,7 +129,20 @@ class Env(object):
 
 		
 	def render(self,*args,**kwargs):
-		pass
+		for i in range(self.size[0] + 1):
+			print '--',
+		print '\n',
+		for i in range(self.size[1]):
+			print '|',
+			for j in range(self.size[0]):
+				if i * self.size[0] + j == self.loc:
+					print '* ',
+				else:
+					print '%d ' % int(self.state[i * self.size[0] + j]),
+			print '|'
+		for i in range(self.size[0] + 1):
+			print '--',
+		print '\n'
 
 
 

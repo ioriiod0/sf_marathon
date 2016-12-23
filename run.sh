@@ -3,4 +3,4 @@
 # @Last Modified by:   ioriiod0
 # @Last Modified time: 2016-12-23 14:01:14
 
-docker run --rm  -v /Users/ioriiod0/Work/sf/sf_marathon/models:/models ioriiod0/sf_marathon python bin/run_dqn.py 
+docker run --rm  -v /Users/kuangzhanhao/data/sf_marathon:/models ioriiod0/sf_marathon python bin/run_dqn.py 

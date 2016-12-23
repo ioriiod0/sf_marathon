@@ -6,8 +6,14 @@
 
 from env import *
 
-en = Env()
+en = Env(random_policy=RandomPolicy(16, 4))
 en.reset()
 
-for i in range(30):
-	print en.step(ACTION_SPACE.STAY)
+for i in range(10):
+	if i % 2 == 0:
+		print en.step(ACTION_SPACE.EAST)
+	else:
+		print en.step(ACTION_SPACE.SOUTH)
+	en.render()
+	# print en.reward
+# print en.peek_reward
